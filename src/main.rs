@@ -4,6 +4,9 @@ use std::path::Path;
 
 //The following crates are used for testing
 extern crate tempfile; //Creates temp files and directories
+use assert_cmd::prelude::*; // Add methods on commands
+use predicates::prelude::*;
+use std::process::Command; // Run programs // Used for writing assertions
 
 fn main() {
     // This should be called with two command line arguments,
