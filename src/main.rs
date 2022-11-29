@@ -4,9 +4,6 @@ use std::path::Path;
 
 //The following crates are used for testing
 extern crate tempfile; //Creates temp files and directories
-use assert_cmd::prelude::*; // Add methods on commands
-use predicates::prelude::*;
-use std::process::Command; // Run programs // Used for writing assertions
 
 fn main() {
     // This should be called with two command line arguments,
@@ -15,22 +12,16 @@ fn main() {
     // be the file we want to write the disemvoweled text to.
     let args: Vec<String> = env::args().collect();
 
-    //TODO: Panic if not enough arguments are provided
-    //Panic should output the string "Not enough arguments"
+    if args.len() < 3 {
+        panic!("Not enough arguments");
+    }
 
-    //TODO:
-    //  * Pass an argument to read_file to read the original text
-    //  * Pass that to disemvowel to remove the vowels
-    //  * Write the disemvoweled text using write_file
-
-    // Replace String::from("dummy text") with what you get from read_file
-    let s = String::from("dummy text");
-
+    let s = String::from(read_file(Path::new(&args[1])));
     let s_disemvowel = disemvowel(&s);
 
     // Use command-line arguments for the name of the file,
     // and s_disemvowel for the text to write out.
-    write_file(Path::new("dummy.txt"), "output string");
+    write_file(Path::new(&args[2]), &s_disemvowel);
 }
 
 fn read_file(path: &Path) -> String {
@@ -42,9 +33,27 @@ fn write_file(path: &Path, s: &str) {
 
 //TODO: Return the input string without vowels.
 fn disemvowel(s: &str) -> String {
-    String::from(s)
+    let mut result = String::new();
+    let temp_str = String::from(s).clone();
+    let chars = temp_str.chars();
+    for ch in chars {
+        let r = get_non_vowel_char(ch);
+        if r != '\0' {
+            result.push(r);
+        }
+    }
+    result
 }
 
+fn get_non_vowel_char(c: char) -> char {
+    let vowels:&str = "aeiouAEIOU";
+    if vowels.contains(c) {
+        '\0'
+    } else {
+        c
+    }
+}
+ 
 // Everything from here down is Rust test code. You shouldn't need to
 // change any of this.
 //
